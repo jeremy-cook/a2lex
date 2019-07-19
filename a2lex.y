@@ -14,13 +14,16 @@
 	#define FALSE 0
 	#define TRUE 1
 	#define DEBUG FALSE
-
-	/* A2L Globals */
-	int proj_active = FALSE;
+	/* A2L Version */
+	#define MAJOR 1
+	#define MINOR 60
 
 	/* A2L Declarations and Structures */
 	#include "./a2l.h"
+	/* Global Project Variables */
+	int proj_active = FALSE;
 	Project project; /* Initialize project, only one can exist per a2l file */
+	/* Pointers */
 	Module *ActiveModule; /* Pointer to current Module block structure */
 	Characteristic *ActiveCharacteristic; /* Pointer to current Characteristic block structure */
 	Measurement *ActiveMeasurement; /* Pointer to current Measurement block structure */
@@ -87,7 +90,8 @@
 a2l: asap2_version
      project
 
-asap2_version: _ASAP2_VERSION _INT _INT { snprintf(sAsap2version, 5, "%d.%d", $2, $3); }
+asap2_version: _ASAP2_VERSION _INT _INT 
+			   { snprintf(project.sAsap2version, 5, "%d.%d", $2, $3); }
 
 /*************************************************************************/
 
@@ -106,6 +110,7 @@ project.start:	_BEGIN _PROJECT
 				  }
 				  else {
 				  	proj_active = TRUE;
+				  	project.nModules = 0;
 				  	project.sName = $3;
 				  	project.sComment = $4;
 				  }
@@ -346,9 +351,8 @@ data.type: _IDENT						{ free($1); }
 /************ END DATA TYPES *****************/
 
 %%
-
-int main(int argc, char **argv)
-{	
+/* Function call from terminal */
+int main(int argc, char **argv) {	
 	if (argc > 1) {
 		yyin = fopen(argv[1], "r");
 		if (!yyin) {
@@ -359,7 +363,21 @@ int main(int argc, char **argv)
 		}
 	}
  	yyparse();
- 	if (DEBUG) { printf("%s\n",sAsap2version); }
+ 	if (DEBUG) { printf("%s\n",project.sAsap2version); }
+}
+
+/* Function call from Library */
+Project a2lparse(char *file_path) {
+	yyin = fopen(file_path, "r");
+	if (!yyin) {
+		char *error;
+		asprintf(&error, "%s is not a valid file", file_path);
+		perror(error);
+		return reset_project;
+	}
+ 	yyparse();
+ 	FreeProject(&project);
+ 	return project;
 }
 
 void yyerror(const char *error_msg) {

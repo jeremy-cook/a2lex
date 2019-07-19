@@ -8,10 +8,7 @@
 #define MAX_MODULES 2
 #define MAX_AXIS_DESCR 4
 
-/* A2L */
-char sAsap2version[5];
-
-/* Utility Functions */
+/* Utilities */
 
 /******* Start Structure Definitions *******/
 	enum _Monotony {
@@ -75,6 +72,7 @@ char sAsap2version[5];
 	};
 
 	typedef struct Characteristic {
+		int nAxisDescr;
 		char *sName;
 		char *sId;
 		enum _Type eType;
@@ -111,6 +109,11 @@ char sAsap2version[5];
 
 /************ START MODULE ************/
 	typedef struct Module {
+		/* Metadata */
+		int nCharacteristics;
+		int nMeasurements;
+		int nAxisPts;
+		/* Components */
 		char *sName;
 		char *sId;
 		Axis_Pts *aAxisPts[MAX_AXIS_PTS];
@@ -125,6 +128,7 @@ char sAsap2version[5];
 
 /************ START PROJECT **************/
 	typedef struct Project {
+		char sAsap2version[5]; /* Only one project per A2L file allowed, so this works */
 		char *sName;
 		char *sComment;
 		/* Start Header */
@@ -132,8 +136,12 @@ char sAsap2version[5];
 		char *sVersion;
 		char *sProjectNo;
 		/* End Header */
+		int nModules;
 		Module *aModules[MAX_MODULES];
 	} Project;
 
+	static const Project reset_project; /* Null Project */
+
 	void SetModule(Project *project, Module *ActiveModule);
+	void FreeProject(Project *project);
 /************ END PROJECT **************/
