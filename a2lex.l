@@ -32,6 +32,7 @@ PROJECT										{ return _PROJECT; }
 HEADER										{ return _HEADER; }
 MODULE										{ return _MODULE; }
 AXIS_DESCR									{ return _AXIS_DESCR; }
+MEASUREMENT									{ return _MEASUREMENT; }
 CHARACTERISTIC								{ return _CHARACTERISTIC; }
  /* Optional Parameters */
 VERSION 									{ return _VERSION; }
@@ -40,7 +41,10 @@ ARRAY_SIZE									{ return _ARRAY_SIZE; }
 MATRIX_DIM 									{ return _MATRIX_DIM; }
 MONOTONY 									{ return _MONOTONY; }
 FORMAT										{ return _FORMAT; }
+PHYS_UNIT									{ return _PHYS_UNIT; }
+ADDR_EPK									{ return _ADDR_EPK; }
 AXIS_PTS_REF								{ return _AXIS_PTS_REF; }
+CURVE_PTS_REF								{ return _CURVE_PTS_REF; }
 NUMBER										{ return _NUMBER; }
 READ_ONLY									{ return _READ_ONLY; }
 STEP_SIZE									{ return _STEP_SIZE; }
